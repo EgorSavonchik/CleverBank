@@ -1,7 +1,14 @@
 package Model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account {
-    private Bank ownerBank;
-    private User ownerUser;
+    private int ownerBankId;
+    private int ownerUserId;
     private int amount;
 }
