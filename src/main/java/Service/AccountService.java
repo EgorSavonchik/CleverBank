@@ -162,4 +162,32 @@ public class AccountService
             throw new RuntimeException(e);
         }
     }
+
+    public void replenishmentFunds(int id, int quantity)
+    {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE Accounts SET amount = amount + ? WHERE id = ?");
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void withdrawalFunds(int id, int quantity)
+    {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE Accounts SET amount = amount - ? WHERE id = ?");
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
