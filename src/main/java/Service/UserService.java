@@ -1,7 +1,6 @@
 package Service;
 
 import Model.Account;
-import Model.Bank;
 import Model.User;
 
 import java.sql.*;

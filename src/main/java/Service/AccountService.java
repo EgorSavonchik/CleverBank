@@ -1,16 +1,21 @@
 package Service;
 
 import Model.Account;
-import Model.Bank;
-
+import org.yaml.snakeyaml.Yaml;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AccountService
 {
     private static Connection connection;
+    private Thread timer;
 
     {
         ResourceBundle bundle = ResourceBundle.getBundle("database");
@@ -48,7 +53,7 @@ public class AccountService
 
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
-                account.setAmount(resultSet.getInt("amount"));
+                account.setAmount(resultSet.getDouble("amount"));
 
                 accounts.add(account);
             }
@@ -73,7 +78,7 @@ public class AccountService
 
             account.setOwnerUserId(resultSet.getInt("owner_user_id"));
             account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
-            account.setAmount(resultSet.getInt("amount"));
+            account.setAmount(resultSet.getDouble("amount"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -89,7 +94,7 @@ public class AccountService
 
             preparedStatement.setInt(1, newAccount.getOwnerBankId());
             preparedStatement.setInt(2, newAccount.getOwnerUserId());
-            preparedStatement.setInt(3, newAccount.getAmount());
+            preparedStatement.setDouble(3, newAccount.getAmount());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -113,7 +118,7 @@ public class AccountService
 
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
-                account.setAmount(resultSet.getInt("amount"));
+                account.setAmount(resultSet.getDouble("amount"));
 
                 accounts.add(account);
             }
@@ -140,7 +145,7 @@ public class AccountService
 
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
-                account.setAmount(resultSet.getInt("amount"));
+                account.setAmount(resultSet.getDouble("amount"));
 
                 accounts.add(account);
             }
@@ -163,12 +168,12 @@ public class AccountService
         }
     }
 
-    public void replenishmentFunds(int id, int quantity)
+    public void replenishmentFunds(int id, double quantity)
     {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "UPDATE Accounts SET amount = amount + ? WHERE id = ?");
-            preparedStatement.setInt(1, quantity);
+            preparedStatement.setDouble(1, quantity);
             preparedStatement.setInt(2, id);
 
             preparedStatement.executeUpdate();
@@ -177,17 +182,92 @@ public class AccountService
         }
     }
 
-    public void withdrawalFunds(int id, int quantity)
+    public void withdrawalFunds(int id, double quantity)
     {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "UPDATE Accounts SET amount = amount - ? WHERE id = ?");
-            preparedStatement.setInt(1, quantity);
+            preparedStatement.setDouble(1, quantity);
             preparedStatement.setInt(2, id);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void transfer(int sender_id, int recipient_id, double quantity)
+    {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("" +
+                    "BEGIN;\n" +
+                    "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;\n" +
+                    "UPDATE Accounts SET amount = amount - ? WHERE id = ?;\n" +
+                    "UPDATE Accounts SET amount = amount + ? WHERE id = ?;\n" +
+                    "COMMIT;\n");
+
+            preparedStatement.setDouble(1, quantity);
+            preparedStatement.setInt(2, sender_id);
+            preparedStatement.setDouble(3, quantity);
+            preparedStatement.setInt(4, recipient_id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void startPercentage()
+    {
+        timer = new Thread(new Runnable()
+        {
+            private Month currentDate = LocalDate.now().getMonth();
+            @Override
+            public void run()
+            {
+                while(true)
+                {
+                    try
+                    {
+                        if(currentDate.plus(1) == LocalDate.now().getMonth())
+                        {
+                            currentDate = LocalDate.now().getMonth();
+
+                            PreparedStatement preparedStatement = connection.prepareStatement(
+                                    "UPDATE Accounts SET amount = amount * (100 + ?) / 100;");
+
+                            InputStream configurationInputStream
+                                    = ClassLoader.getSystemResourceAsStream("application.yml");
+                            if(configurationInputStream != null)
+                            {
+                                Map<String, Object> map = new Yaml().load(configurationInputStream);
+
+                                preparedStatement.setInt(1, (int) map.get("interest_rate"));
+
+                                preparedStatement.executeUpdate();
+                            }
+                            else
+                            {
+                                throw new FileNotFoundException();
+                            }
+                        }
+
+                        Thread.sleep(30 * 1000);
+                    } catch (InterruptedException ex) {
+                        break;
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+        timer.start();
+    }
+
+    public void stopPercentage()
+    {
+        timer.interrupt();
     }
 }

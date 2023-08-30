@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class Account {
     private int ownerBankId;
     private int ownerUserId;
-    private int amount;
+    private double amount;
 }
