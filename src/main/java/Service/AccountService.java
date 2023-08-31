@@ -1,6 +1,7 @@
 package Service;
 
 import Model.Account;
+import Model.Transaction;
 import org.yaml.snakeyaml.Yaml;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ public class AccountService
 {
     private static Connection connection;
     private Thread timer;
+    private static CheckService checkService = new CheckService();
 
     {
         ResourceBundle bundle = ResourceBundle.getBundle("database");
@@ -182,11 +184,22 @@ public class AccountService
     {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "UPDATE Accounts SET amount = amount + ? WHERE id = ?");
+                    "BEGIN;" +
+                        "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;" +
+                        "UPDATE Accounts SET amount = amount + ? WHERE id = ?;" +
+                        "INSERT INTO Transactions(sender_account_id, beneficiary_account_id, amount, operation_type) VALUES(?, ?, ?, ?);" +
+                        "COMMIT;");
+
             preparedStatement.setDouble(1, quantity);
             preparedStatement.setInt(2, id);
+            preparedStatement.setNull(3, Types.INTEGER);
+            preparedStatement.setInt(4, id);
+            preparedStatement.setDouble(5, quantity);
+            preparedStatement.setObject(6, Transaction.Operation.REPLENISHMENT, Types.OTHER);
 
             preparedStatement.executeUpdate();
+
+            checkService.generateCheck(new Transaction(null, id, quantity, Transaction.Operation.REPLENISHMENT));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -196,11 +209,22 @@ public class AccountService
     {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "UPDATE Accounts SET amount = amount - ? WHERE id = ?");
+                    "BEGIN;" +
+                        "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;" +
+                        "UPDATE Accounts SET amount = amount - ? WHERE id = ?;" +
+                        "INSERT INTO Transactions(sender_account_id, beneficiary_account_id, amount, operation_type) VALUES(?, ?, ?, ?);" +
+                        "COMMIT;");
+
             preparedStatement.setDouble(1, quantity);
             preparedStatement.setInt(2, id);
+            preparedStatement.setInt(3, id);
+            preparedStatement.setNull(4, Types.INTEGER);
+            preparedStatement.setDouble(5, quantity);
+            preparedStatement.setObject(6, Transaction.Operation.WITHDRAWAL, Types.OTHER);
 
             preparedStatement.executeUpdate();
+
+            checkService.generateCheck(new Transaction(id, null, quantity, Transaction.Operation.WITHDRAWAL));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -209,19 +233,26 @@ public class AccountService
     public void transfer(int sender_id, int recipient_id, double quantity)
     {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("" +
-                    "BEGIN;\n" +
-                    "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;\n" +
-                    "UPDATE Accounts SET amount = amount - ? WHERE id = ?;\n" +
-                    "UPDATE Accounts SET amount = amount + ? WHERE id = ?;\n" +
-                    "COMMIT;\n");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "BEGIN;" +
+                        "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;" +
+                        "UPDATE Accounts SET amount = amount - ? WHERE id = ?;" +
+                        "UPDATE Accounts SET amount = amount + ? WHERE id = ?;" +
+                        "INSERT INTO Transactions(sender_account_id, beneficiary_account_id, amount, operation_type) VALUES(?, ?, ?, ?);" +
+                        "COMMIT;");
 
             preparedStatement.setDouble(1, quantity);
             preparedStatement.setInt(2, sender_id);
             preparedStatement.setDouble(3, quantity);
             preparedStatement.setInt(4, recipient_id);
+            preparedStatement.setInt(5, sender_id);
+            preparedStatement.setInt(6, recipient_id);
+            preparedStatement.setDouble(7, quantity);
+            preparedStatement.setObject(8, Transaction.Operation.TRANSFER, Types.OTHER);
 
             preparedStatement.executeUpdate();
+
+            checkService.generateCheck(new Transaction(sender_id, recipient_id, quantity, Transaction.Operation.TRANSFER));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

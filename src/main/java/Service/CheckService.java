@@ -102,6 +102,8 @@ public class CheckService
                     + " ".repeat(36 - 6 - 4 - decimalFormat.format(transaction.getAmount()).length()) +
                     decimalFormat.format(transaction.getAmount()) + " BYN" + " |" + "\n");
             writer.write("|" + "_".repeat(38) + "|" + "\n");
+
+            checkNumber++;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
