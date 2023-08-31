@@ -83,7 +83,7 @@ public class UserService
             while (accountResultSet.next())
             {
                 accountList.add(new Account(accountResultSet.getInt("owner_bank_id")
-                        , id, accountResultSet.getInt("amount")));
+                        , id, accountResultSet.getDouble("amount")));
             }
 
             user.setAccountList(accountList);

@@ -54,6 +54,8 @@ public class AccountService
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
                 account.setAmount(resultSet.getDouble("amount"));
+                account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
+                        + resultSet.getString("id"));
 
                 accounts.add(account);
             }
@@ -73,12 +75,16 @@ public class AccountService
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
 
             account = new Account();
 
             account.setOwnerUserId(resultSet.getInt("owner_user_id"));
             account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
             account.setAmount(resultSet.getDouble("amount"));
+            account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
+                    + resultSet.getString("id"));
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -119,6 +125,8 @@ public class AccountService
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
                 account.setAmount(resultSet.getDouble("amount"));
+                account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
+                        + resultSet.getString("id"));
 
                 accounts.add(account);
             }
@@ -146,6 +154,8 @@ public class AccountService
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
                 account.setAmount(resultSet.getDouble("amount"));
+                account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
+                        + resultSet.getString("id"));
 
                 accounts.add(account);
             }

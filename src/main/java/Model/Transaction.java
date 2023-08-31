@@ -8,7 +8,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
-    private int senderAccountId;
-    private int beneficiaryAccountId;
-    private int amount;
+    private Integer senderAccountId;
+    private Integer beneficiaryAccountId;
+    private double amount;
+    private Operation operationType;
+
+
+    public enum Operation
+    {
+        REPLENISHMENT,
+        WITHDRAWAL,
+        TRANSFER;
+    }
 }
+

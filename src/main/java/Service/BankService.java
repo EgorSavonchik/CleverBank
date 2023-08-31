@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 public class BankService
 {
     private static Connection connection;
+    private static AccountService accountService = new AccountService();
 
     {
         ResourceBundle bundle = ResourceBundle.getBundle("database");
@@ -64,13 +65,16 @@ public class BankService
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
 
             bank = new Bank();
             bank.setName(resultSet.getString("name"));
 
             List<Account> accountList = new ArrayList<>();
-            ResultSet accountResultSet = connection.prepareStatement("SELECT * FROM Accounts WHERE Accounts.owner_bank_id = ?", id)
-                    .executeQuery();
+            PreparedStatement accountPreparedStatement = connection.prepareStatement("SELECT * FROM Accounts WHERE owner_bank_id = ?");
+            accountPreparedStatement.setInt(1, id);
+
+            ResultSet accountResultSet = accountPreparedStatement.executeQuery();
 
             while (accountResultSet.next())
             {
@@ -108,5 +112,10 @@ public class BankService
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Bank findByAccountId(int id)
+    {
+        return this.findById(accountService.findById(id).getOwnerBankId());
     }
 }
