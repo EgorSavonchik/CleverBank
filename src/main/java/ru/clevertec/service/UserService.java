@@ -46,6 +46,7 @@ public class UserService
             {
                 User user = new User();
 
+                user.setId(resultSet.getInt("id"));
                 user.setName(resultSet.getString("name"));
                 user.setPassword(resultSet.getString("password"));
                 user.setAccountList(new AccountService().findByUserId(resultSet.getInt("id")));
@@ -68,8 +69,10 @@ public class UserService
             userPreparedStatement.setInt(1, id);
 
             ResultSet resultSet = userPreparedStatement.executeQuery();
+            resultSet.next();
 
             user = new User();
+            user.setId(resultSet.getInt("id"));
             user.setName(resultSet.getString("name"));
             user.setPassword(resultSet.getString("password"));
 
@@ -80,10 +83,10 @@ public class UserService
 
             ResultSet accountResultSet = accountPreparedStatement.executeQuery();
 
-            while (accountResultSet.next())
-            {
-                accountList.add(new Account(accountResultSet.getInt("owner_bank_id")
-                        , id, accountResultSet.getDouble("amount")));
+            while (accountResultSet.next()) {
+                accountList.add(new Account(accountResultSet.getInt("id"),
+                        accountResultSet.getInt("owner_bank_id"),
+                        id, accountResultSet.getDouble("amount")));
             }
 
             user.setAccountList(accountList);

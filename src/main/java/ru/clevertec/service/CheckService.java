@@ -1,6 +1,8 @@
 package ru.clevertec.service;
 
+import ru.clevertec.model.Account;
 import ru.clevertec.model.Transaction;
+import ru.clevertec.model.User;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,10 +14,13 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.nio.file.Files;
+import java.util.List;
+
 public class CheckService {
     private static int checkNumber = 1;
     private static AccountService accountService = new AccountService();
     private static BankService bankService = new BankService();
+    private static UserService userService = new UserService();
     private final int BANK_ACCOUNT_NUMBER_LENGTH = 10;
     private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
@@ -106,5 +111,100 @@ public class CheckService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void generateTransactionStatement(Account account) {
+        System.out.println(" ".repeat(40) + "Выписка");
+        System.out.println(" ".repeat(44 - bankService.findById(account.getOwnerBankId()).getName().length() / 2)
+                + bankService.findById(account.getOwnerBankId()).getName());
+        System.out.println("Клиент" + " ".repeat(35 - 6) + "| " +
+                userService.findById(account.getOwnerUserId()).getName());
+        System.out.println("Счет" + " ".repeat(35 - 4) + "| " + account.getAccountNumber());
+        System.out.println("Валюта" + " ".repeat(35 - 6) + "| BYN");
+        System.out.println("Дата открытия" + " ".repeat(35 - 13) + "| " + account.getCreatedAt().toString());
+        System.out.println("Период" + " ".repeat(35 - 6) + "| " + account.getCreatedAt().toString()
+                + " - " + LocalDate.now());
+        System.out.println("Дата и время формирования" + " ".repeat(35 - 25) + "| "
+                + LocalDate.now() + ", " + LocalTime.now().withSecond(0).withNano(0));
+        System.out.println("Остаток" + " ".repeat(35 - 7) + "| "
+                + decimalFormat.format(account.getAmount()) + " BYN");
+        System.out.println(" ".repeat(6) + "Дата" + " ".repeat(5) + "|"
+                + " ".repeat(19)+ "Примечание" + " ".repeat(19) + "|" + " ".repeat(5) + "Сумма");
+        System.out.println("-".repeat(80));
+
+        List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId());
+
+        for (Transaction transaction : accountTransactions) {
+            switch (transaction.getOperationType()) {
+                case REPLENISHMENT -> {
+                    System.out.println(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
+                            + "Пополнение средств" + " ".repeat(29) + "| "
+                            + decimalFormat.format(transaction.getAmount()) + " BYN");
+                }
+                case WITHDRAWAL -> {
+                    System.out.println(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
+                            + "Снятие средств" + " ".repeat(33) + "| -"
+                            + decimalFormat.format(transaction.getAmount()) + " BYN");
+                }
+                case TRANSFER -> {
+                    if (transaction.getSenderAccountId() == account.getId()) {
+                        System.out.println(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
+                                + "Перевод пользователю " + userService.findById(transaction.getBeneficiaryAccountId()).getName()
+                                + " ".repeat(26 - userService.findById(transaction.getBeneficiaryAccountId()).getName()
+                                .length()) + "| -" + decimalFormat.format(transaction.getAmount()) + " BYN");
+                    } else {
+                        System.out.println(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
+                                + "Перевод от пользователя " + userService.findById(transaction.getSenderAccountId()).getName()
+                                + " ".repeat(24 - userService.findById(transaction.getSenderAccountId()).getName()
+                                .length()) + "| " + decimalFormat.format(transaction.getAmount()) + " BYN");
+                    }
+                }
+            }
+        }
+    }
+
+    public void generateStatementMoney(Account account)
+    {
+        System.out.println(" ".repeat(40) + "Money statement");
+        System.out.println(" ".repeat(44 - bankService.findById(account.getOwnerBankId()).getName().length() / 2)
+                + bankService.findById(account.getOwnerBankId()).getName());
+        System.out.println("Клиент" + " ".repeat(35 - 6) + "| " +
+                userService.findById(account.getOwnerUserId()).getName());
+        System.out.println("Счет" + " ".repeat(35 - 4) + "| " + account.getAccountNumber());
+        System.out.println("Валюта" + " ".repeat(35 - 6) + "| BYN");
+        System.out.println("Дата открытия" + " ".repeat(35 - 13) + "| " + account.getCreatedAt().toString());
+        System.out.println("Период" + " ".repeat(35 - 6) + "| " + account.getCreatedAt().toString()
+                + " - " + LocalDate.now());
+        System.out.println("Дата и время формирования" + " ".repeat(35 - 25) + "| "
+                + LocalDate.now() + ", " + LocalTime.now().withSecond(0).withNano(0));
+        System.out.println("Остаток" + " ".repeat(35 - 7) + "| "
+                + decimalFormat.format(account.getAmount()) + " BYN");
+
+        List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId());
+        int parish = 0, care = 0;
+
+        for (Transaction transaction : accountTransactions) {
+            switch (transaction.getOperationType()) {
+                case REPLENISHMENT -> {
+                    parish += transaction.getAmount();
+                }
+                case WITHDRAWAL -> {
+                    care += transaction.getAmount();
+                }
+                case TRANSFER -> {
+                    if (transaction.getSenderAccountId() == account.getId()) {
+                        care += transaction.getAmount();
+                    } else {
+                        parish += transaction.getAmount();
+                    }
+                }
+            }
+        }
+
+        System.out.println(" ".repeat(17) + "Приход" + " ".repeat(7) + "|" + " ".repeat(8) + "Уход");
+        System.out.println(" ".repeat(10) + "-".repeat(41));
+        System.out.println(" ".repeat(12) + decimalFormat.format(parish)
+                + " ".repeat(18 - decimalFormat.format(parish).length()) + "|" + " ".repeat(2)
+                + "-" + decimalFormat.format(care));
     }
 }

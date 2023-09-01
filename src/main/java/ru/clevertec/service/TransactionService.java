@@ -41,6 +41,7 @@ public class TransactionService {
                 Transaction transaction = new Transaction();
 
                 transaction = new Transaction();
+                transaction.setId(resultSet.getInt("id"));
                 transaction.setAmount(resultSet.getInt("amount"));
                 transaction.setSenderAccountId((Integer) resultSet.getObject("sender_account_id"));
                 transaction.setBeneficiaryAccountId((Integer) resultSet.getObject("beneficiary_account_id"));
@@ -65,6 +66,7 @@ public class TransactionService {
             resultSet.next();
 
             transaction = new Transaction();
+            transaction.setId(resultSet.getInt("id"));
             transaction.setAmount(resultSet.getInt("amount"));
             transaction.setSenderAccountId((Integer) resultSet.getObject("sender_account_id"));
             transaction.setBeneficiaryAccountId((Integer) resultSet.getObject("beneficiary_account_id"));

@@ -47,6 +47,7 @@ public class AccountService {
             while (resultSet.next()) {
                 Account account = new Account();
 
+                account.setId(resultSet.getInt("id"));
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
                 account.setAmount(resultSet.getDouble("amount"));
@@ -75,6 +76,7 @@ public class AccountService {
 
             account = new Account();
 
+            account.setId(resultSet.getInt("id"));
             account.setOwnerUserId(resultSet.getInt("owner_user_id"));
             account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
             account.setAmount(resultSet.getDouble("amount"));
@@ -116,6 +118,7 @@ public class AccountService {
             while (resultSet.next()) {
                 Account account = new Account();
 
+                account.setId(resultSet.getInt("id"));
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
                 account.setAmount(resultSet.getDouble("amount"));
@@ -145,6 +148,7 @@ public class AccountService {
             while (resultSet.next()) {
                 Account account = new Account();
 
+                account.setId(resultSet.getInt("id"));
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
                 account.setOwnerUserId(resultSet.getInt("owner_user_id"));
                 account.setAmount(resultSet.getDouble("amount"));
@@ -245,6 +249,39 @@ public class AccountService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Transaction> getAccountRelatedTransactions(int id) {
+        List<Transaction> transactionList = new ArrayList<>();
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Transactions " +
+                    "WHERE Transactions.sender_account_id = ? OR Transactions.beneficiary_account_id = ?");
+
+            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next())
+            {
+                Transaction transaction = new Transaction();
+
+                transaction.setId(resultSet.getInt("id"));
+                transaction.setAmount(resultSet.getInt("amount"));
+                transaction.setSenderAccountId((Integer) resultSet.getObject("sender_account_id"));
+                transaction.setBeneficiaryAccountId((Integer) resultSet.getObject("beneficiary_account_id"));
+                transaction.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
+                transaction.setOperationType(Transaction.Operation
+                        .valueOf(resultSet.getObject("operation_type").toString()));
+
+                transactionList.add(transaction);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return transactionList;
     }
 
     public void startPercentage() {

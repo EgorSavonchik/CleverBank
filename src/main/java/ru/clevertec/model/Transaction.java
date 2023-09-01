@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
+    private int id;
     private Integer senderAccountId;
     private Integer beneficiaryAccountId;
     private double amount;

@@ -39,7 +39,8 @@ public class BankService {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM Banks");
 
             while (resultSet.next()) {
-                banks.add(new Bank(resultSet.getString("name"),
+                banks.add(new Bank(resultSet.getInt("id"),
+                        resultSet.getString("name"),
                         new AccountService().findByBankId(resultSet.getInt("id"))));
             }
         } catch (SQLException e) {
@@ -60,6 +61,7 @@ public class BankService {
             resultSet.next();
 
             bank = new Bank();
+            bank.setId(resultSet.getInt("id"));
             bank.setName(resultSet.getString("name"));
 
             List<Account> accountList = new ArrayList<>();
@@ -69,7 +71,8 @@ public class BankService {
             ResultSet accountResultSet = accountPreparedStatement.executeQuery();
 
             while (accountResultSet.next()) {
-                accountList.add(new Account(id, accountResultSet.getInt("owner_user_id")
+                accountList.add(new Account(accountResultSet.getInt("id")
+                        , id, accountResultSet.getInt("owner_user_id")
                         , accountResultSet.getInt("amount")));
             }
 
