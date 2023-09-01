@@ -2,6 +2,14 @@ plugins {
     id 'java'
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ru.clevertec.CleverBankCLI'
+        )
+    }
+}
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -13,18 +21,19 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
-    // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
 
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.2' // для чтения .yml
+
+    runtimeOnly group: 'org.aspectj', name: 'aspectjrt', version: '1.9.20'
+
+    runtimeOnly 'org.aspectj:aspectjweaver:1.9.20'
 }
 
 test {

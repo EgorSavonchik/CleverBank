@@ -1,7 +1,7 @@
-package Service;
+package ru.clevertec.service;
 
-import Model.Account;
-import Model.User;
+import ru.clevertec.model.Account;
+import ru.clevertec.model.User;
 
 import java.sql.*;
 import java.util.ArrayList;

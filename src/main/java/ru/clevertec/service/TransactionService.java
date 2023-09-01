@@ -1,17 +1,13 @@
-package Service;
+package ru.clevertec.service;
 
-import Model.Transaction;
+import ru.clevertec.model.Transaction;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TransactionService
-{
+public class TransactionService {
     private static Connection connection;
 
     {
@@ -21,12 +17,9 @@ public class TransactionService
         String username = bundle.getString("username");
         String password = bundle.getString("password");
 
-        try
-        {
+        try {
             Class.forName(bundle.getString("driver"));
-        }
-        catch (ClassNotFoundException exception)
-        {
+        } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
         }
 
@@ -37,8 +30,7 @@ public class TransactionService
         }
     }
 
-    public List<Transaction> findAll()
-    {
+    public List<Transaction> findAll() {
         List<Transaction> transactions = new ArrayList<>();
 
         try {
@@ -50,8 +42,11 @@ public class TransactionService
 
                 transaction = new Transaction();
                 transaction.setAmount(resultSet.getInt("amount"));
-                transaction.setSenderAccountId(resultSet.getInt("sender_account_id"));
-                transaction.setBeneficiaryAccountId(resultSet.getInt("beneficiary_account_id"));
+                transaction.setSenderAccountId((Integer) resultSet.getObject("sender_account_id"));
+                transaction.setBeneficiaryAccountId((Integer) resultSet.getObject("beneficiary_account_id"));
+                transaction.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
+                transaction.setOperationType(Transaction.Operation
+                        .valueOf(resultSet.getObject("operation_type").toString()));
 
                 transactions.add(transaction);
             }
@@ -62,17 +57,20 @@ public class TransactionService
         return transactions;
     }
 
-    public Transaction findById(int id)
-    {
+    public Transaction findById(int id) {
         Transaction transaction = null;
 
         try {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM Transactions");
+            resultSet.next();
 
             transaction = new Transaction();
             transaction.setAmount(resultSet.getInt("amount"));
-            transaction.setSenderAccountId(resultSet.getInt("sender_account_id"));
-            transaction.setBeneficiaryAccountId(resultSet.getInt("beneficiary_account_id"));
+            transaction.setSenderAccountId((Integer) resultSet.getObject("sender_account_id"));
+            transaction.setBeneficiaryAccountId((Integer) resultSet.getObject("beneficiary_account_id"));
+            transaction.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
+            transaction.setOperationType(Transaction.Operation
+                    .valueOf(resultSet.getObject("operation_type").toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

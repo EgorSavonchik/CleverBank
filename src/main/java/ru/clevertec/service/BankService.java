@@ -1,16 +1,14 @@
-package Service;
+package ru.clevertec.service;
 
-import Model.Account;
-import Model.Bank;
-import Model.Transaction;
+import ru.clevertec.model.Account;
+import ru.clevertec.model.Bank;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class BankService
-{
+public class BankService {
     private static Connection connection;
     private static AccountService accountService = new AccountService();
 
@@ -21,12 +19,9 @@ public class BankService
         String username = bundle.getString("username");
         String password = bundle.getString("password");
 
-        try
-        {
+        try {
             Class.forName(bundle.getString("driver"));
-        }
-        catch (ClassNotFoundException exception)
-        {
+        } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
         }
 
@@ -37,15 +32,13 @@ public class BankService
         }
     }
 
-    public List<Bank> findAll()
-    {
+    public List<Bank> findAll() {
         List<Bank> banks = new ArrayList<>();
 
         try {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM Banks");
 
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 banks.add(new Bank(resultSet.getString("name"),
                         new AccountService().findByBankId(resultSet.getInt("id"))));
             }
@@ -56,8 +49,7 @@ public class BankService
         return banks;
     }
 
-    public Bank findById(int id)
-    {
+    public Bank findById(int id) {
         Bank bank = null;
 
         try {
@@ -76,8 +68,7 @@ public class BankService
 
             ResultSet accountResultSet = accountPreparedStatement.executeQuery();
 
-            while (accountResultSet.next())
-            {
+            while (accountResultSet.next()) {
                 accountList.add(new Account(id, accountResultSet.getInt("owner_user_id")
                         , accountResultSet.getInt("amount")));
             }
@@ -90,8 +81,7 @@ public class BankService
         return bank;
     }
 
-    public void create(Bank newBank)
-    {
+    public void create(Bank newBank) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Banks(name) VALUES(?)");
             preparedStatement.setString(1, newBank.getName());
@@ -102,8 +92,7 @@ public class BankService
         }
     }
 
-    public void delete(int id)
-    {
+    public void delete(int id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Accounts WHERE Banks.id=?");
             preparedStatement.setInt(1, id);
@@ -114,8 +103,7 @@ public class BankService
         }
     }
 
-    public Bank findByAccountId(int id)
-    {
+    public Bank findByAccountId(int id) {
         return this.findById(accountService.findById(id).getOwnerBankId());
     }
 }

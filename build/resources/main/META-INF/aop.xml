@@ -1,0 +1,11 @@
+<aspectj>
+    <aspects>
+        <aspect name="ru.clevertec.aspect.LoggingAspect" />
+    </aspects>
+
+    <!--  <weaver options="-verbose -debug -showWeaveInfo"> -->
+    <weaver>
+        <include within="ru.clevertec.service.*" />
+    </weaver>
+
+</aspectj>

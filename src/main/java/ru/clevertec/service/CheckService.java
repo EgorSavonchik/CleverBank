@@ -1,6 +1,6 @@
-package Service;
+package ru.clevertec.service;
 
-import Model.Transaction;
+import ru.clevertec.model.Transaction;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,12 +12,11 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.nio.file.Files;
-public class CheckService
-{
+public class CheckService {
     private static int checkNumber = 1;
     private static AccountService accountService = new AccountService();
     private static BankService bankService = new BankService();
-    private final int bankAccountNumberLength = 10;
+    private final int BANK_ACCOUNT_NUMBER_LENGTH = 10;
     private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     {
@@ -77,24 +76,24 @@ public class CheckService
                         " ".repeat(36 - 17 - bankService.findByAccountId(transaction.getSenderAccountId()).getName().length())
                         + bankService.findByAccountId(transaction.getSenderAccountId()).getName() + " |" + "\n");
                 writer.write("| " + "Счет получателя:" +
-                        " ".repeat(36 - 16 - bankAccountNumberLength)
+                        " ".repeat(36 - 16 - BANK_ACCOUNT_NUMBER_LENGTH)
                         + accountService.findById(transaction.getBeneficiaryAccountId()).getAccountNumber() + " |" + "\n");
                 writer.write("| " + "Счет отправителя:" +
-                        " ".repeat(36 - 17 - bankAccountNumberLength)
+                        " ".repeat(36 - 17 - BANK_ACCOUNT_NUMBER_LENGTH)
                         + accountService.findById(transaction.getSenderAccountId()).getAccountNumber() + " |" + "\n");
             } else if (transaction.getOperationType() == Transaction.Operation.REPLENISHMENT) {
                 writer.write("| " + "Банк клиента:" +
                         " ".repeat(36 - 13 - bankService.findByAccountId(transaction.getBeneficiaryAccountId()).getName().length())
                         + bankService.findByAccountId(transaction.getBeneficiaryAccountId()).getName() + " |" + "\n");
                 writer.write("| " + "Счет клиента:" +
-                        " ".repeat(36 - 13 - bankAccountNumberLength)
+                        " ".repeat(36 - 13 - BANK_ACCOUNT_NUMBER_LENGTH)
                         + accountService.findById(transaction.getBeneficiaryAccountId()).getAccountNumber() + " |" + "\n");
             } else if (transaction.getOperationType() == Transaction.Operation.WITHDRAWAL) {
                 writer.write("| " + "Банк клиента:" +
                         " ".repeat(36 - 13 - bankService.findByAccountId(transaction.getSenderAccountId()).getName().length())
                         + bankService.findByAccountId(transaction.getSenderAccountId()).getName() + " |" + "\n");
                 writer.write("| " + "Счет клиента:" +
-                        " ".repeat(36 - 13 - bankAccountNumberLength)
+                        " ".repeat(36 - 13 - BANK_ACCOUNT_NUMBER_LENGTH)
                         + accountService.findById(transaction.getSenderAccountId()).getAccountNumber() + " |" + "\n");
             }
 

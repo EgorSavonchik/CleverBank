@@ -1,4 +1,4 @@
-package Model;
+package ru.clevertec.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

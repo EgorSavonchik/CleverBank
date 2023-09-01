@@ -1,7 +1,7 @@
-package Service;
+package ru.clevertec.service;
 
-import Model.Account;
-import Model.Transaction;
+import ru.clevertec.model.Account;
+import ru.clevertec.model.Transaction;
 import org.yaml.snakeyaml.Yaml;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class AccountService
-{
+public class AccountService {
     private static Connection connection;
     private Thread timer;
     private static CheckService checkService = new CheckService();
@@ -26,12 +25,9 @@ public class AccountService
         String username = bundle.getString("username");
         String password = bundle.getString("password");
 
-        try
-        {
+        try {
             Class.forName(bundle.getString("driver"));
-        }
-        catch (ClassNotFoundException exception)
-        {
+        } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
         }
 
@@ -42,15 +38,13 @@ public class AccountService
         }
     }
 
-    public List<Account> findAll()
-    {
+    public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
 
         try {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM Accounts");
 
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 Account account = new Account();
 
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
@@ -58,6 +52,7 @@ public class AccountService
                 account.setAmount(resultSet.getDouble("amount"));
                 account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
                         + resultSet.getString("id"));
+                account.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
 
                 accounts.add(account);
             }
@@ -68,8 +63,7 @@ public class AccountService
         return accounts;
     }
 
-    public Account findById(int id)
-    {
+    public Account findById(int id) {
         Account account = null;
 
         try {
@@ -86,6 +80,7 @@ public class AccountService
             account.setAmount(resultSet.getDouble("amount"));
             account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
                     + resultSet.getString("id"));
+            account.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -94,8 +89,7 @@ public class AccountService
         return account;
     }
 
-    public void create(Account newAccount)
-    {
+    public void create(Account newAccount) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Accounts(owner_bank_id," +
                     " owner_user_id, amount) VALUES(?, ?, ?)");
@@ -110,8 +104,7 @@ public class AccountService
         }
     }
 
-    public List<Account> findByBankId(int bankId)
-    {
+    public List<Account> findByBankId(int bankId) {
         List<Account> accounts = new ArrayList<>();
 
         try {
@@ -120,8 +113,7 @@ public class AccountService
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 Account account = new Account();
 
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
@@ -129,6 +121,7 @@ public class AccountService
                 account.setAmount(resultSet.getDouble("amount"));
                 account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
                         + resultSet.getString("id"));
+                account.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
 
                 accounts.add(account);
             }
@@ -149,8 +142,7 @@ public class AccountService
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 Account account = new Account();
 
                 account.setOwnerBankId(resultSet.getInt("owner_bank_id"));
@@ -158,6 +150,7 @@ public class AccountService
                 account.setAmount(resultSet.getDouble("amount"));
                 account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
                         + resultSet.getString("id"));
+                account.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
 
                 accounts.add(account);
             }
@@ -168,8 +161,7 @@ public class AccountService
         return accounts;
     }
 
-    public void delete(int id)
-    {
+    public void delete(int id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Accounts WHERE Accounts.id=?");
             preparedStatement.setInt(1, id);
@@ -180,8 +172,7 @@ public class AccountService
         }
     }
 
-    public void replenishmentFunds(int id, double quantity)
-    {
+    public void replenishmentFunds(int id, double quantity) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "BEGIN;" +
@@ -205,8 +196,7 @@ public class AccountService
         }
     }
 
-    public void withdrawalFunds(int id, double quantity)
-    {
+    public void withdrawalFunds(int id, double quantity) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "BEGIN;" +
@@ -230,8 +220,7 @@ public class AccountService
         }
     }
 
-    public void transfer(int sender_id, int recipient_id, double quantity)
-    {
+    public void transfer(int sender_id, int recipient_id, double quantity) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     "BEGIN;" +
@@ -258,20 +247,14 @@ public class AccountService
         }
     }
 
-    public void startPercentage()
-    {
-        timer = new Thread(new Runnable()
-        {
+    public void startPercentage() {
+        timer = new Thread(new Runnable() {
             private Month currentDate = LocalDate.now().getMonth();
             @Override
-            public void run()
-            {
-                while(true)
-                {
-                    try
-                    {
-                        if(currentDate.plus(1) == LocalDate.now().getMonth())
-                        {
+            public void run() {
+                while (true) {
+                    try {
+                        if (currentDate.plus(1) == LocalDate.now().getMonth()) {
                             currentDate = LocalDate.now().getMonth();
 
                             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -279,16 +262,13 @@ public class AccountService
 
                             InputStream configurationInputStream
                                     = ClassLoader.getSystemResourceAsStream("application.yml");
-                            if(configurationInputStream != null)
-                            {
+                            if(configurationInputStream != null) {
                                 Map<String, Object> map = new Yaml().load(configurationInputStream);
 
                                 preparedStatement.setInt(1, (int) map.get("interest_rate"));
 
                                 preparedStatement.executeUpdate();
-                            }
-                            else
-                            {
+                            } else {
                                 throw new FileNotFoundException();
                             }
                         }
