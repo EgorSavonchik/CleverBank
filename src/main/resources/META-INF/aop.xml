@@ -6,6 +6,6 @@
     <!--  <weaver options="-verbose -debug -showWeaveInfo"> -->
     <weaver>
         <include within="ru.clevertec.service.*" />
+        <include within="ru.clevertec.CleverBankCLI"/>
     </weaver>
-
 </aspectj>

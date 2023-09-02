@@ -1,7 +1,7 @@
 ________________________________________
 |              Bank check              |
-| Check                              7 |
-| 2023-09-02                  23:27:58 |
+| Check                              8 |
+| 2023-09-02                  23:34:10 |
 | Transaction type:           TRANSFER |
 | Payee's bank:             CleverBank |
 | Sender's bank:            CleverBank |

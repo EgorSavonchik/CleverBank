@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="CleverBank@localhost" uuid="9e4b5f1b-856a-4fb6-9edc-5b625d25efcd">
+    <data-source source="LOCAL" name="CleverBank@localhost" uuid="db619ca8-856b-4fbd-8012-314e8fec2e9b">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

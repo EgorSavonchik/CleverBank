@@ -1,14 +1,14 @@
 package ru.clevertec.aspect;
 
-/*import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;*/
+import org.aspectj.lang.annotation.Before;
 
-//@Aspect
+@Aspect
 public class LoggingAspect {
 
-    /*@Before("execution(* com.example.service.*.*(..))")
+    @Before("execution(* ru.clevertec.service..*(..))")
     public void logMethodEntry(JoinPoint joinPoint) {
         System.out.println("Entering method: " + joinPoint.getSignature().toShortString());
         for (Object arg : joinPoint.getArgs()) {
@@ -16,10 +16,10 @@ public class LoggingAspect {
         }
     }
 
-    @AfterReturning(pointcut = "execution(* com.example.service.*.*(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* ru.clevertec.service..*(..))", returning = "result")
     public void logMethodExit(JoinPoint joinPoint, Object result) {
         System.out.println("Exiting method: " + joinPoint.getSignature().toShortString());
         System.out.println("  Result: " + result);
-    }*/
+    }
 }
 

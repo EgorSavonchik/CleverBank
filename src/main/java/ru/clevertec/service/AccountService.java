@@ -110,7 +110,8 @@ public class AccountService {
         List<Account> accounts = new ArrayList<>();
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Accounts WHERE Accounts.owner_bank_id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Accounts " +
+                    "WHERE Accounts.owner_bank_id = ?");
             preparedStatement.setInt(1, bankId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -140,7 +141,8 @@ public class AccountService {
         List<Account> accounts = new ArrayList<>();
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Accounts WHERE Accounts.owner_user_id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Accounts " +
+                    "WHERE Accounts.owner_user_id = ?");
             preparedStatement.setInt(1, userId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -251,15 +253,18 @@ public class AccountService {
         }
     }
 
-    public List<Transaction> getAccountRelatedTransactions(int id) {
+    public List<Transaction> getAccountRelatedTransactions(int id, LocalDate periodStart, LocalDate periodEnd) {
         List<Transaction> transactionList = new ArrayList<>();
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Transactions " +
-                    "WHERE Transactions.sender_account_id = ? OR Transactions.beneficiary_account_id = ?");
+                    "WHERE (Transactions.sender_account_id = ? OR Transactions.beneficiary_account_id = ?) AND " +
+                    "created_at BETWEEN ? AND ?;");
 
             preparedStatement.setInt(1, id);
             preparedStatement.setInt(2, id);
+            preparedStatement.setDate(3, Date.valueOf(periodStart));
+            preparedStatement.setDate(4, Date.valueOf(periodEnd));
 
             ResultSet resultSet = preparedStatement.executeQuery();
 

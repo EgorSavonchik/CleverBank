@@ -62,7 +62,10 @@ public class TransactionService {
         Transaction transaction = null;
 
         try {
-            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM Transactions");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Transactions WHERE id = ?");
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
             transaction = new Transaction();
