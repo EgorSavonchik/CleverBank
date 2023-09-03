@@ -95,6 +95,18 @@ public class BankService {
         }
     }
 
+    public void update(Bank newBank, int id) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Banks SET name = ? WHERE id = ?");
+            preparedStatement.setString(1, newBank.getName());
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void delete(int id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Accounts WHERE Banks.id=?");

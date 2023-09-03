@@ -110,6 +110,21 @@ public class UserService
         }
     }
 
+    public void update(User newUser, int id)
+    {
+        try {
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "UPDATE Users SET name = ?, password = ? WHERE id = ?");
+        preparedStatement.setString(1, newUser.getName());
+        preparedStatement.setString(2, newUser.getPassword());
+        preparedStatement.setInt(3, id);
+
+        preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void delete(int id)
     {
         try {

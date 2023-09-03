@@ -1,9 +1,12 @@
 package ru.clevertec.service;
 
 import ru.clevertec.model.Transaction;
+import ru.clevertec.model.User;
 
 import java.sql.*;
+
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -83,5 +86,52 @@ public class TransactionService {
         return transaction;
     }
 
+    public void create(Transaction newTransaction)
+    {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO Transactions(senderAccountId, beneficiaryAccountId, amount, " +
+                            "createdAt, operationType) VALUES(?, ?, ?, ?, ?)");
+            preparedStatement.setObject(1, newTransaction.getSenderAccountId(), Types.INTEGER);
+            preparedStatement.setObject(2, newTransaction.getBeneficiaryAccountId(), Types.INTEGER);
+            preparedStatement.setDouble(3, newTransaction.getAmount());
+            preparedStatement.setDate(4, Date.valueOf(newTransaction.getCreatedAt()));
+            preparedStatement.setObject(5, newTransaction.getOperationType(), Types.OTHER);
 
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void update(Transaction newTransaction, int id)
+    {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE Transactions SET senderAccountId = ?, beneficiaryAccountId = ?, amount = ?, " +
+                            "createdAt = ?, operationType = ? WHERE id = ?");
+            preparedStatement.setObject(1, newTransaction.getSenderAccountId(), Types.INTEGER);
+            preparedStatement.setObject(2, newTransaction.getBeneficiaryAccountId(), Types.INTEGER);
+            preparedStatement.setDouble(3, newTransaction.getAmount());
+            preparedStatement.setDate(4, Date.valueOf(newTransaction.getCreatedAt()));
+            preparedStatement.setObject(5, newTransaction.getOperationType(), Types.OTHER);
+            preparedStatement.setInt(6, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void delete(int id)
+    {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Transactions WHERE id = ?");
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

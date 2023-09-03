@@ -1,6 +1,14 @@
 plugins {
     id 'java'
+    //id ('aspectj.AspectjGradlePlugin') version '0.0.8'
+    id 'war'
 }
+
+war {
+    webAppDirName = 'src/main/resources/web' // Здесь указывается путь к папке с веб-контентом
+}
+
+ext.aspectjVersion = '1.9.20'
 
 jar {
     manifest {
@@ -8,6 +16,10 @@ jar {
                 'Main-Class': 'ru.clevertec.CleverBankCLI'
         )
     }
+}
+
+configurations {
+    "ru.clevertec.aspect"
 }
 
 group 'org.example'
@@ -34,10 +46,17 @@ dependencies {
     runtimeOnly 'org.aspectj:aspectjweaver:1.9.20'
     annotationProcessor 'org.aspectj:aspectjweaver:1.9.20'
 
+    runtimeOnly 'org.aspectj:aspectjrt:1.9.20'
+
     implementation 'org.aspectj:aspectjtools:1.9.20'
 
-    // https://mvnrepository.com/artifact/com.itextpdf/itextpdf
     implementation 'com.itextpdf:itextpdf:5.5.13.3'
+
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:9.0.80'
+
+    compileOnly 'org.apache.tomcat:tomcat-catalina:9.0.80'
+
+    implementation 'com.google.code.gson:gson:2.10.1'
 }
 
 test {

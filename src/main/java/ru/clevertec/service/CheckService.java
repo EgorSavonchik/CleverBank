@@ -29,6 +29,12 @@ public class CheckService {
         Path path = Paths.get(directoryPath);
         int count = 0;
 
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path, "*.txt")) {
             for (Path file : directoryStream) {
                 count++;
@@ -247,6 +253,12 @@ public class CheckService {
 
     public void generateStatementMoney(Account account, LocalDate startPeriod, LocalDate endPeriod) {
         String filePath = "statement-money";
+
+        try {
+            Files.createDirectories(Path.of(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if (startPeriod.isBefore(account.getCreatedAt())) {
             startPeriod = account.getCreatedAt();

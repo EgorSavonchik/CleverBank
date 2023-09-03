@@ -106,6 +106,22 @@ public class AccountService {
         }
     }
 
+    public void update(Account newAccount, int id) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET owner_bank_id= ?," +
+                    " owner_user_id = ?, amount = ? WHERE id = ?");
+
+            preparedStatement.setInt(1, newAccount.getOwnerBankId());
+            preparedStatement.setInt(2, newAccount.getOwnerUserId());
+            preparedStatement.setDouble(3, newAccount.getAmount());
+            preparedStatement.setInt(4, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Account> findByBankId(int bankId) {
         List<Account> accounts = new ArrayList<>();
 
