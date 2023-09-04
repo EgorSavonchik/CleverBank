@@ -1,7 +1,5 @@
 package ru.clevertec.service;
 
-
-
 import com.itextpdf.text.*;
 import ru.clevertec.model.Account;
 import ru.clevertec.model.Transaction;
@@ -18,14 +16,14 @@ import java.util.List;
 
 public class CheckService {
     private static int checkNumber = 1;
-    private static AccountService accountService = new AccountService();
-    private static BankService bankService = new BankService();
-    private static UserService userService = new UserService();
+    private static final AccountService accountService = new AccountService();
+    private static final BankService bankService = new BankService();
+    private static final UserService userService = new UserService();
     private final int BANK_ACCOUNT_NUMBER_LENGTH = 10;
-    private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     {
-        String directoryPath = "check"; // Путь к директории в корне проекта
+        String directoryPath = "check";
         Path path = Paths.get(directoryPath);
         int count = 0;
 
@@ -66,10 +64,10 @@ public class CheckService {
             writer.write("| " + "Check" +
                     " ".repeat(36 - 5 - String.valueOf(checkNumber).length()) + checkNumber + " |" + "\n");
             writer.write("| " + LocalDate.now() + " ".repeat(36 - LocalDate.now().toString().length()
-                    - LocalTime.now().withNano(0).toString().length()) + LocalTime.now().withNano(0)
-                    .toString() + " |" + "\n");
-            writer.write("| " + "Transaction type:" +
-                    " ".repeat(36 - 17 - transaction.getOperationType().toString().length()) + transaction.getOperationType().toString() + " |" + "\n");
+                    - LocalTime.now().withNano(0).toString().length()) + LocalTime.now()
+                    .withNano(0).toString() + " |" + "\n");
+            writer.write("| " + "Transaction type:" + " ".repeat(36 - 17 - transaction.getOperationType()
+                    .toString().length()) + transaction.getOperationType().toString() + " |" + "\n");
 
             if (transaction.getOperationType() == Transaction.Operation.TRANSFER) {
                 writer.write("| " + "Payee's bank:" +
@@ -130,8 +128,8 @@ public class CheckService {
             period = LocalDate.now().minusYears(1);
         }
 
-        String directoryPath = "statement-transaction"; // Относительный путь к директории "check"
-        String fileName = account.getAccountNumber() + "_" + period + "_" + LocalDate.now() +  ".txt"; // Название файла
+        String directoryPath = "statement-transaction";
+        String fileName = account.getAccountNumber() + "_" + period + "_" + LocalDate.now() +  ".txt";
         File directory = new File(directoryPath);
 
         File file = new File(directory, fileName);
@@ -155,7 +153,8 @@ public class CheckService {
                     + " ".repeat(22)+ "Note" + " ".repeat(22) + "|" + " ".repeat(4) + "Amount" + "\n");
             writer.write("-".repeat(80) + "\n");
 
-            List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId(), period, LocalDate.now());
+            List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId(),
+                    period, LocalDate.now());
 
             for (Transaction transaction : accountTransactions) {
                 switch (transaction.getOperationType()) {
@@ -171,10 +170,11 @@ public class CheckService {
                     }
                     case TRANSFER -> {
                         if (transaction.getSenderAccountId() == account.getId()) {
-                            writer.write(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
-                                    + "Transfer to user " + userService.findById(transaction.getBeneficiaryAccountId()).getName()
-                                    + " ".repeat(47 - 17 - userService.findById(transaction.getBeneficiaryAccountId()).getName()
-                                    .length()) + "| -" + decimalFormat.format(transaction.getAmount()) + " BYN" + "\n");
+                            writer.write(transaction.getCreatedAt().toString() + " ".repeat(5) + "| " +
+                                    "Transfer to user " + userService.findById(transaction.getBeneficiaryAccountId())
+                                    .getName() + " ".repeat(47 - 17 - userService.findById(transaction
+                                    .getBeneficiaryAccountId()).getName().length()) + "| -" + decimalFormat
+                                    .format(transaction.getAmount()) + " BYN" + "\n");
                         } else {
                             writer.write(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
                                     + "Transfer by user " + userService.findById(transaction.getSenderAccountId()).getName()
@@ -207,8 +207,8 @@ public class CheckService {
             period = LocalDate.now().minusYears(1);
         }
 
-        String directoryPath = "statement-transaction"; // Относительный путь к директории
-        String fileName = account.getAccountNumber() + "_" + period + "_" + LocalDate.now() +  ".pdf"; // Название файла
+        String directoryPath = "statement-transaction";
+        String fileName = account.getAccountNumber() + "_" + period + "_" + LocalDate.now() +  ".pdf";
 
         Font font = FontFactory.getFont("fonts/ofont.ru_Courier New.ttf", "Identity-H", true);
         try (FileOutputStream fs = new FileOutputStream(new File(directoryPath, fileName))) {
@@ -217,23 +217,27 @@ public class CheckService {
             document.open();
 
             document.add(new Paragraph(" ".repeat(32) + "Statement" + "\n", font));
-            document.add(new Paragraph(" ".repeat(36 - bankService.findById(account.getOwnerBankId()).getName().length() / 2)
-                    + bankService.findById(account.getOwnerBankId()).getName() + "\n", font));
+            document.add(new Paragraph(" ".repeat(36 - bankService.findById(account.getOwnerBankId())
+                    .getName().length() / 2) + bankService.findById(account.getOwnerBankId()).getName() + "\n", font));
             document.add(new Paragraph("Client" + " ".repeat(35 - 6) + "| " +
                     userService.findById(account.getOwnerUserId()).getName() + "\n", font));
-            document.add(new Paragraph("Account" + " ".repeat(35 - 7) + "| " + account.getAccountNumber() + "\n", font));
+            document.add(new Paragraph("Account" + " ".repeat(35 - 7) + "| " + account.getAccountNumber() +
+                    "\n", font));
             document.add(new Paragraph("Currency" + " ".repeat(35 - 8) + "| BYN" + "\n", font));
-            document.add(new Paragraph("Opening date" + " ".repeat(35 - 12) + "| " + account.getCreatedAt().toString() + "\n", font));
-            document.add(new Paragraph("Period" + " ".repeat(35 - 6) + "| " + period + " - " + LocalDate.now() + "\n", font));
-            document.add(new Paragraph("Date and time of formation" + " ".repeat(35 - 26) + "| "
-                    + LocalDate.now() + ", " + LocalTime.now().withSecond(0).withNano(0) + "\n", font));
-            document.add(new Paragraph("Remainder" + " ".repeat(35 - 9) + "| "
-                    + decimalFormat.format(account.getAmount()) + " BYN" + "\n", font));
-            document.add(new Paragraph(" ".repeat(6) + "Date" + " ".repeat(5) + "|"
-                    + " ".repeat(18)+ "Note" + " ".repeat(18) + "|" + " ".repeat(4) + "Amount" + "\n", font));
+            document.add(new Paragraph("Opening date" + " ".repeat(35 - 12) + "| " +
+                    account.getCreatedAt().toString() + "\n", font));
+            document.add(new Paragraph("Period" + " ".repeat(35 - 6) + "| " + period + " - " +
+                    LocalDate.now() + "\n", font));
+            document.add(new Paragraph("Date and time of formation" + " ".repeat(35 - 26) + "| " +
+                    LocalDate.now() + ", " + LocalTime.now().withSecond(0).withNano(0) + "\n", font));
+            document.add(new Paragraph("Remainder" + " ".repeat(35 - 9) + "| " +
+                    decimalFormat.format(account.getAmount()) + " BYN" + "\n", font));
+            document.add(new Paragraph(" ".repeat(6) + "Date" + " ".repeat(5) + "|" +
+                    " ".repeat(18)+ "Note" + " ".repeat(18) + "|" + " ".repeat(4) + "Amount" + "\n", font));
             document.add(new Paragraph("-".repeat(72) + "\n", font));
 
-            List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId(), period, LocalDate.now());
+            List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId(),
+                    period, LocalDate.now());
 
             for (Transaction transaction : accountTransactions) {
                 switch (transaction.getOperationType()) {
@@ -249,15 +253,17 @@ public class CheckService {
                     }
                     case TRANSFER -> {
                         if (transaction.getSenderAccountId() == account.getId()) {
-                            document.add(new Paragraph(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
-                                    + "Transfer to user " + userService.findById(transaction.getBeneficiaryAccountId()).getName()
-                                    + " ".repeat(39 - 17 - userService.findById(transaction.getBeneficiaryAccountId()).getName()
-                                    .length()) + "| -" + decimalFormat.format(transaction.getAmount()) + " BYN" + "\n", font));
+                            document.add(new Paragraph(transaction.getCreatedAt().toString() + " ".repeat(5) +
+                                    "| " + "Transfer to user " + userService.findById(transaction.getBeneficiaryAccountId())
+                                    .getName() + " ".repeat(39 - 17 - userService.findById(
+                                    transaction.getBeneficiaryAccountId()).getName().length()) + "| -" +
+                                    decimalFormat.format(transaction.getAmount()) + " BYN" + "\n", font));
                         } else {
-                            document.add(new Paragraph(transaction.getCreatedAt().toString() + " ".repeat(5) + "| "
-                                    + "Transfer by user " + userService.findById(transaction.getSenderAccountId()).getName()
-                                    + " ".repeat(39 - 17 - userService.findById(transaction.getSenderAccountId()).getName()
-                                    .length()) + "| " + decimalFormat.format(transaction.getAmount()) + " BYN" + "\n", font));
+                            document.add(new Paragraph(transaction.getCreatedAt().toString() + " ".repeat(5) +
+                                    "| " + "Transfer by user " + userService.findById(transaction.getSenderAccountId())
+                                    .getName() + " ".repeat(39 - 17 - userService.findById(
+                                    transaction.getSenderAccountId()).getName().length()) + "| " +
+                                    decimalFormat.format(transaction.getAmount()) + " BYN" + "\n", font));
                         }
                     }
                 }
@@ -303,22 +309,24 @@ public class CheckService {
             PdfWriter.getInstance(document, fs);
             document.open();
 
-            document.add(new Paragraph(" ".repeat(40) + "Money statement", font));
-            document.add(new Paragraph(" ".repeat(47 - bankService.findById(account.getOwnerBankId()).getName().length() / 2)
-                    + bankService.findById(account.getOwnerBankId()).getName(), font));
+            document.add(new Paragraph(" ".repeat(29) + "Money statement", font));
+            document.add(new Paragraph(" ".repeat(36 - bankService.findById(account.getOwnerBankId())
+                    .getName().length() / 2) + bankService.findById(account.getOwnerBankId()).getName(), font));
             document.add(new Paragraph("Client" + " ".repeat(35 - 6) + "| " +
                     userService.findById(account.getOwnerUserId()).getName(), font));
             document.add(new Paragraph("Account" + " ".repeat(35 - 7) + "| " + account.getAccountNumber(), font));
             document.add(new Paragraph("Currency" + " ".repeat(35 - 8) + "| BYN", font));
-            document.add(new Paragraph("Opening date" + " ".repeat(35 - 12) + "| " + account.getCreatedAt().toString(), font));
-            document.add(new Paragraph("Period" + " ".repeat(35 - 6) + "| " + account.getCreatedAt() + " - " + LocalDate.now(), font));
+            document.add(new Paragraph("Opening date" + " ".repeat(35 - 12) + "| " + account.getCreatedAt().
+                    toString(), font));
+            document.add(new Paragraph("Period" + " ".repeat(35 - 6) + "| " + account.getCreatedAt() +
+                    " - " + LocalDate.now(), font));
             document.add(new Paragraph("Date and time of formation" + " ".repeat(35 - 26) + "| "
                     + LocalDate.now() + ", " + LocalTime.now().withSecond(0).withNano(0), font));
             document.add(new Paragraph("Remainder" + " ".repeat(35 - 9) + "| "
                     + decimalFormat.format(account.getAmount()) + " BYN", font));
 
-            List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId(), account.getCreatedAt(),
-                    LocalDate.now());
+            List<Transaction> accountTransactions = accountService.getAccountRelatedTransactions(account.getId(),
+                    account.getCreatedAt(), LocalDate.now());
             int parish = 0, care = 0;
 
             for (Transaction transaction : accountTransactions) {
@@ -339,7 +347,8 @@ public class CheckService {
                 }
             }
 
-            document.add(new Paragraph(" ".repeat(17) + "Parish" + " ".repeat(7) + "|" + " ".repeat(8) + "Care", font));
+            document.add(new Paragraph(" ".repeat(17) + "Parish" + " ".repeat(7) + "|" +
+                    " ".repeat(8) + "Care", font));
             document.add(new Paragraph(" ".repeat(10) + "-".repeat(41), font));
             document.add(new Paragraph(" ".repeat(12) + decimalFormat.format(parish)
                     + " ".repeat(18 - decimalFormat.format(parish).length()) + "|" + " ".repeat(2)
@@ -347,7 +356,9 @@ public class CheckService {
 
             document.close();
         }
-        catch (DocumentException exc) {} catch (FileNotFoundException e) {
+        catch (DocumentException exc) {
+            throw new RuntimeException(exc);
+        } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);

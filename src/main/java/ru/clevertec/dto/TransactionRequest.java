@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.clevertec.model.Transaction;
 import ru.clevertec.util.LocalDateAdapter;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 

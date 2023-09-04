@@ -1,9 +1,0 @@
-________________________________________
-|              Bank check              |
-| Check                              5 |
-| 2023-09-02                  23:25:48 |
-| Transaction type:      REPLENISHMENT |
-| Client bank:              CleverBank |
-| Client account:           0000000001 |
-| Amount:                   100,00 BYN |
-|______________________________________|

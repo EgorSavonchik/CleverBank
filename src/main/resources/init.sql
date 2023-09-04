@@ -31,3 +31,75 @@ create table if not exists Transactions
     operation_type Operation_enum,
     created_at date DEFAULT CURRENT_TIMESTAMP
     );
+
+
+
+INSERT INTO Banks(name) VALUES ('Clever Bank');
+INSERT INTO Banks(name) VALUES ('Mega Bank');
+INSERT INTO Banks(name) VALUES ('Egor Bank');
+INSERT INTO Banks(name) VALUES ('Super Bank');
+INSERT INTO Banks(name) VALUES ('Expert Bank');
+
+
+INSERT INTO Users(name, password) VALUES ('Egor', '12345678');
+INSERT INTO Users(name, password) VALUES ('User1', '12345678');
+INSERT INTO Users(name, password) VALUES ('User2', '12345678');
+INSERT INTO Users(name, password) VALUES ('User3', '12345678');
+INSERT INTO Users(name, password) VALUES ('User4', '12345678');
+INSERT INTO Users(name, password) VALUES ('User5', '87654321');
+INSERT INTO Users(name, password) VALUES ('User6', '12345678');
+INSERT INTO Users(name, password) VALUES ('User7', '12345678');
+INSERT INTO Users(name, password) VALUES ('User8', '12345678');
+INSERT INTO Users(name, password) VALUES ('User9', 'qwertyu');
+INSERT INTO Users(name, password) VALUES ('User10', '12345678');
+INSERT INTO Users(name, password) VALUES ('User11', '12345678');
+INSERT INTO Users(name, password) VALUES ('User12', '12345678');
+INSERT INTO Users(name, password) VALUES ('User13', '12345678');
+INSERT INTO Users(name, password) VALUES ('User14', '12345678');
+INSERT INTO Users(name, password) VALUES ('User15', '11111111');
+INSERT INTO Users(name, password) VALUES ('User16', '12345678');
+INSERT INTO Users(name, password) VALUES ('User17', 'asdfghj');
+INSERT INTO Users(name, password) VALUES ('User18', '12345678');
+INSERT INTO Users(name, password) VALUES ('User19', '12345678');
+
+
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 2, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 3, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 4, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 5, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 1, 200);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (2, 1, 101);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (3, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (4, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (5, 1, 150);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (2, 2, 150);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (3, 3, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (3, 3, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (3, 4, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 5, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 6, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 7, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 8, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 9, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 10, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 11, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 12, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 13, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 14, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 15, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 16, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 17, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 18, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 19, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 20, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (3, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (4, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (2, 1, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 5, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 6, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 7, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 8, 100);
+INSERT INTO Accounts(owner_bank_id, owner_user_id, amount) VALUES (1, 9, 100);

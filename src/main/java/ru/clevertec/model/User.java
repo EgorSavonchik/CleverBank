@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,15 +19,13 @@ public class User {
     @Expose
     private List<Account> accountList;
 
-    public User(String name, String password)
-    {
+    public User(String name, String password) {
         this.name = name;
         this.password = password;
         this.accountList = new ArrayList<>();
     }
 
-    public User(String name, String password, List<Account> accountList)
-    {
+    public User(String name, String password, List<Account> accountList) {
         this.name = name;
         this.password = password;
         this.accountList = accountList;

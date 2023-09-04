@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +17,7 @@ public class Bank {
     @Expose
     private List<Account> accountList;
 
-    public Bank(String name)
-    {
+    public Bank(String name) {
         this.name = name;
         accountList = new ArrayList<>();
     }

@@ -76,7 +76,8 @@ public class UserService
         User user = null;
 
         try {
-            PreparedStatement userPreparedStatement = connection.prepareStatement("SELECT * FROM Users WHERE Users.id=?");
+            PreparedStatement userPreparedStatement = connection.prepareStatement(
+                    "SELECT * FROM Users WHERE Users.id=?");
             userPreparedStatement.setInt(1, id);
 
             ResultSet resultSet = userPreparedStatement.executeQuery();
@@ -89,7 +90,8 @@ public class UserService
 
             List<Account> accountList = new ArrayList<>();
 
-            PreparedStatement accountPreparedStatement = connection.prepareStatement("SELECT * from accounts WHERE Accounts.owner_user_id=?");
+            PreparedStatement accountPreparedStatement = connection.prepareStatement(
+                    "SELECT * from accounts WHERE Accounts.owner_user_id=?");
             accountPreparedStatement.setInt(1, id);
 
             ResultSet accountResultSet = accountPreparedStatement.executeQuery();
@@ -116,7 +118,8 @@ public class UserService
     public void create(User newUser)
     {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Users(name, password) VALUES(?, ?)");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO Users(name, password) VALUES(?, ?)");
             preparedStatement.setString(1, newUser.getName());
             preparedStatement.setString(2, newUser.getPassword());
 

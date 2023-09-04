@@ -2,7 +2,9 @@ package ru.clevertec.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.clevertec.util.LocalDateAdapter;
 
 import java.time.LocalDate;

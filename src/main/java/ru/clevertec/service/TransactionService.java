@@ -73,7 +73,8 @@ public class TransactionService {
         Transaction transaction = null;
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Transactions WHERE id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM Transactions WHERE id = ?");
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -95,7 +96,7 @@ public class TransactionService {
     }
 
     /**
-     * Добавляет ранзакцию в базу данных
+     * Добавляет транзакцию в базу данных
      *
      * @param newTransaction объект Transaction, который будет добавлен в базу данных
      */
@@ -121,7 +122,7 @@ public class TransactionService {
      * Обновляет уже существующую транзакцию, присваивая ей новые значения
      *
      * @param newTransaction объект Transaction, которым будет замещена текущая транзакия
-     * @param id int, индентификатор транзакции, которая будет обновлен
+     * @param id int, индентификатор транзакции, которая будет обновлена
      */
     public void update(Transaction newTransaction, int id)
     {

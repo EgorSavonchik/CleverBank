@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 
 public class BankService {
     private static Connection connection;
-    private static AccountService accountService = new AccountService();
+    private static final AccountService accountService = new AccountService();
 
     {
         ResourceBundle bundle = ResourceBundle.getBundle("database");
@@ -76,7 +76,8 @@ public class BankService {
             bank.setName(resultSet.getString("name"));
 
             List<Account> accountList = new ArrayList<>();
-            PreparedStatement accountPreparedStatement = connection.prepareStatement("SELECT * FROM Accounts WHERE owner_bank_id = ?");
+            PreparedStatement accountPreparedStatement = connection.prepareStatement(
+                    "SELECT * FROM Accounts WHERE owner_bank_id = ?");
             accountPreparedStatement.setInt(1, id);
 
             ResultSet accountResultSet = accountPreparedStatement.executeQuery();
@@ -136,7 +137,8 @@ public class BankService {
      */
     public void delete(int id) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Accounts WHERE Banks.id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM Accounts WHERE Banks.id=?");
             preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();

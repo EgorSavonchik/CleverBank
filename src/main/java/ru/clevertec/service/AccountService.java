@@ -79,7 +79,8 @@ public class AccountService {
         Account account = null;
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Accounts WHERE Accounts.id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM Accounts WHERE Accounts.id=?");
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -94,7 +95,6 @@ public class AccountService {
             account.setAccountNumber("0".repeat(10 - resultSet.getString("id").length())
                     + resultSet.getString("id"));
             account.setCreatedAt(resultSet.getDate("created_at").toLocalDate());
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -226,7 +226,8 @@ public class AccountService {
      */
     public void delete(int id) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Accounts WHERE Accounts.id=?");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM Accounts WHERE Accounts.id=?");
             preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();

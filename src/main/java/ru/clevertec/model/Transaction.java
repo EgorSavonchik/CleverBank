@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.clevertec.util.LocalDateAdapter;
-
 import java.time.LocalDate;
 
 @Data
@@ -24,8 +23,7 @@ public class Transaction {
     @Expose
     private Operation operationType;
 
-    public Transaction(Integer senderAccountId, Integer beneficiaryAccountId, double amount, Operation operationType)
-    {
+    public Transaction(Integer senderAccountId, Integer beneficiaryAccountId, double amount, Operation operationType) {
         this.senderAccountId = senderAccountId;
         this.beneficiaryAccountId = beneficiaryAccountId;
         this.amount = amount;
@@ -33,8 +31,7 @@ public class Transaction {
     }
 
     public Transaction(Integer senderAccountId, Integer beneficiaryAccountId, double amount, LocalDate createdAt,
-                       Operation operationType)
-    {
+                       Operation operationType) {
         this.senderAccountId = senderAccountId;
         this.beneficiaryAccountId = beneficiaryAccountId;
         this.amount = amount;
