@@ -46,6 +46,12 @@ public class CheckService {
         checkNumber = count + 1;
     }
 
+    /**
+     * Создает чек для заданной транзакции, чек сохраняется в формате .txt вдиректорию check, расположенную
+     * в корне проекта
+     *
+     * @param transaction объект Transaction, транзакция, для которой будет создан чек
+     */
     public void generateCheck(Transaction transaction) {
         String directoryPath = "check"; // Относительный путь к директории "check"
         String fileName = "check" + checkNumber + ".txt"; // Название файла
@@ -106,7 +112,15 @@ public class CheckService {
     }
 
 
-
+    /**
+     * Создает выписку в формате .txt, по транзакциям заданного счета, которая будет находиться в директории
+     * statement-transaction, расположенной в корне проекта. Доступны три временных формата: 1) за месяц; 2) за год;
+     * 3) за все время существования счета
+     *
+     * @param account объект Account, счет для которого производится выписка
+     * @param statementFormat объект перечисления StatementFormat, определяет период, для которого будет
+     * создана выписка(за месяц(MONTH), за год(YEAR), за все время(ALL_TIME))
+     */
     public void generateTransactionStatementTxt(Account account, StatementFormat statementFormat) {
         LocalDate period = account.getCreatedAt();
 
@@ -175,6 +189,15 @@ public class CheckService {
         }
     }
 
+    /**
+     * Создает выписку в формате .pdf, по транзакциям заданного счета, которая будет находиться в директории
+     * statement-transaction, расположенной в корне проекта. Доступны три временных формата: 1) за месяц; 2) за год;
+     * 3) за все время существования счета
+     *
+     * @param account объект Account, счет для которого производится выписка
+     * @param statementFormat объект перечисления StatementFormat, определяет период, для которого будет
+     * создана выписка(за месяц(MONTH), за год(YEAR), за все время(ALL_TIME))
+     */
     public void generateTransactionStatementPdf(Account account, StatementFormat statementFormat) {
         LocalDate period = account.getCreatedAt();
 
@@ -251,6 +274,14 @@ public class CheckService {
 
     }
 
+    /**
+     * Создает выписку по приходу и трате валюты для заданного счета в заданный прмежуток времени. Выписка сохраняется
+     * в формате .pdf в директории statement-money расположенной в корне проекта
+     *
+     * @param account int, идентификатор счета, для которого создается выписка
+     * @param startPeriod LocalDate, дата - начало периода выписки
+     * @param endPeriod LocalDate, дата - конец периода выписки
+     */
     public void generateStatementMoney(Account account, LocalDate startPeriod, LocalDate endPeriod) {
         String filePath = "statement-money";
 

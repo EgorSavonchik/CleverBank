@@ -18,6 +18,17 @@ public class TransactionCrudServlet extends HttpServlet {
     private TransactionService transactionService = new TransactionService();
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+    /**
+     * Переодпределяет метод doGet для обработки get запросов
+     * /transaction - возвращает список всех транзакций в формате json
+     * /transaction/{id} - возвращает транзакцию с заданным идентификатором в формате json
+     *
+     * @param request  an {@link HttpServletRequest} object that contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter printWriter = response.getWriter();
@@ -30,6 +41,16 @@ public class TransactionCrudServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Переодпределяет метод doPost для обработки post запросов
+     * /transaction - при отправке  TransactionRequest в формате json добавляет новую транзакцию в базу данных
+     *
+     * @param request  an {@link HttpServletRequest} object that contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         TransactionRequest transactionRequest = gson.fromJson(request.getParameter("transactionRequest"),
@@ -42,6 +63,16 @@ public class TransactionCrudServlet extends HttpServlet {
         response.setStatus(201);
     }
 
+    /**
+     * Переодпределяет метод doPut для обработки put запросов
+     * /transaction - при отправке TransactionRequest в формате json обновляет существующую транзакцию в базе данных
+     *
+     * @param request  the {@link HttpServletRequest} object that contains the request the client made of the servlet
+     * @param response the {@link HttpServletResponse} object that contains the response the servlet returns to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         TransactionRequest transactionRequest = gson.fromJson(request.getParameter("transactionRequest"),
@@ -55,6 +86,16 @@ public class TransactionCrudServlet extends HttpServlet {
         response.setStatus(201);
     }
 
+    /**
+     * Переодпределяет метод doDelete для обработки delete запросов
+     * /transaction/{id} - удаляет транзакцию с заданным идентификатором
+     *
+     * @param request  the {@link HttpServletRequest} object that contains the request the client made of the servlet
+     * @param response the {@link HttpServletResponse} object that contains the response the servlet returns to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(request.getPathInfo().split("/").length == 2) {

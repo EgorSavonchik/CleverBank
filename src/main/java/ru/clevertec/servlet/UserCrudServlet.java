@@ -18,6 +18,17 @@ public class UserCrudServlet extends HttpServlet {
     private UserService userService = new UserService();
     private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+    /**
+     * Переодпределяет метод doGet для обработки get запросов
+     * /user - возвращает список всех пользователей в формате json
+     * /user/{id} - возвращает пользователя с заданным идентификатором в формате json
+     *
+     * @param request  an {@link HttpServletRequest} object that contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter printWriter = response.getWriter();
@@ -30,6 +41,16 @@ public class UserCrudServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Переодпределяет метод doPost для обработки post запросов
+     * /user - при отправке UserRequest в формате json добавляет нового пользователя в базу данных
+     *
+     * @param request  an {@link HttpServletRequest} object that contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that contains the response the servlet sends to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserRequest userRequest = gson.fromJson(request.getParameter("userRequest"), UserRequest.class);
@@ -39,6 +60,16 @@ public class UserCrudServlet extends HttpServlet {
         response.setStatus(201);
     }
 
+    /**
+     * Переодпределяет метод doPut для обработки put запросов
+     * /user - при отправке UserRequest в формате json обновляет существующего пользователя в базе данных
+     *
+     * @param request  the {@link HttpServletRequest} object that contains the request the client made of the servlet
+     * @param response the {@link HttpServletResponse} object that contains the response the servlet returns to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserRequest userRequest = gson.fromJson(request.getParameter("userRequest"), UserRequest.class);
@@ -49,6 +80,16 @@ public class UserCrudServlet extends HttpServlet {
         response.setStatus(201);
     }
 
+    /**
+     * Переодпределяет метод doDelete для обработки delete запросов
+     * /user/{id} - удаляет пользователя с заданным идентификатором
+     *
+     * @param request  the {@link HttpServletRequest} object that contains the request the client made of the servlet
+     * @param response the {@link HttpServletResponse} object that contains the response the servlet returns to the client
+     *
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(request.getPathInfo().split("/").length == 2) {

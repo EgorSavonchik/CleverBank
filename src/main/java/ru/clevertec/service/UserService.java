@@ -35,6 +35,11 @@ public class UserService
         }
     }
 
+    /**
+     * Возвращает список всех пользователей, находящихся в базе данных
+     *
+     * @return список обектов User
+     */
     public List<User> findAll()
     {
         List<User> users = new ArrayList<>();
@@ -60,6 +65,12 @@ public class UserService
         return users;
     }
 
+    /**
+     * Возращает пользователя по заданному идентификатору
+     *
+     * @param id int, идентификатор нужного пользователя
+     * @return объект User, счет с заданным идентификатором
+     */
     public User findById(int id)
     {
         User user = null;
@@ -97,6 +108,11 @@ public class UserService
         return user;
     }
 
+    /**
+     * Добавляет нового пользователя в базу данных
+     *
+     * @param newUser объект User, который будет добавлен в базу данных
+     */
     public void create(User newUser)
     {
         try {
@@ -110,6 +126,12 @@ public class UserService
         }
     }
 
+    /**
+     * Обновляет уже существующего пользователя, присваивая ему новые значения
+     *
+     * @param newUser объект User, которым будет замещен текущий
+     * @param id int, индентификатор пользователя, который будет обновлен
+     */
     public void update(User newUser, int id)
     {
         try {
@@ -125,6 +147,11 @@ public class UserService
         }
     }
 
+    /**
+     * Удаляет пользователя по заданному идентификатору
+     *
+     * @param id int, идентификатор пользователя
+     */
     public void delete(int id)
     {
         try {

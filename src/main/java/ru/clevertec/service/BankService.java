@@ -32,6 +32,11 @@ public class BankService {
         }
     }
 
+    /**
+     * Возвращает все банки, хранящиеся в базе данных
+     *
+     * @return список объектов Bank
+     */
     public List<Bank> findAll() {
         List<Bank> banks = new ArrayList<>();
 
@@ -50,6 +55,12 @@ public class BankService {
         return banks;
     }
 
+    /**
+     * Возращает банк из базы данных по заданному идентификатору
+     *
+     * @param id int, идентификатор банкаи
+     * @return объект Bank, с заданным идентификатором
+     */
     public Bank findById(int id) {
         Bank bank = null;
 
@@ -84,6 +95,11 @@ public class BankService {
         return bank;
     }
 
+    /**
+     * Добавляет в базу данных новый банк
+     *
+     * @param newBank объект Bank, который необходимо добавить в базу данных
+     */
     public void create(Bank newBank) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Banks(name) VALUES(?)");
@@ -95,6 +111,12 @@ public class BankService {
         }
     }
 
+    /**
+     * Обновляет уже существующий банк с заданным идентификатором
+     *
+     * @param newBank объект Bank, которым будет замещен текущий
+     * @param id int, идентификатор банка, который будет замещен
+     */
     public void update(Bank newBank, int id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Banks SET name = ? WHERE id = ?");
@@ -107,6 +129,11 @@ public class BankService {
         }
     }
 
+    /**
+     * Удаляет банк с заданным идентификатором из базы данных
+     *
+     * @param id int, идентификатор банка
+     */
     public void delete(int id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Accounts WHERE Banks.id=?");
@@ -118,6 +145,12 @@ public class BankService {
         }
     }
 
+    /**
+     * Возвращает банк, которому принадлежит счет с заданным идентификатором
+     *
+     * @param id int, идентификатор счета
+     * @return объект Bank
+     */
     public Bank findByAccountId(int id) {
         return this.findById(accountService.findById(id).getOwnerBankId());
     }

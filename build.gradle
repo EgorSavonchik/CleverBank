@@ -1,14 +1,11 @@
 plugins {
     id 'java'
-    //id ('aspectj.AspectjGradlePlugin') version '0.0.8'
     id 'war'
 }
 
 war {
     webAppDirName = 'src/main/resources/web' // Здесь указывается путь к папке с веб-контентом
 }
-
-ext.aspectjVersion = '1.9.20'
 
 jar {
     manifest {
@@ -42,13 +39,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     implementation 'org.yaml:snakeyaml:2.2' // для чтения .yml
-
-    runtimeOnly 'org.aspectj:aspectjweaver:1.9.20'
-    annotationProcessor 'org.aspectj:aspectjweaver:1.9.20'
-
-    runtimeOnly 'org.aspectj:aspectjrt:1.9.20'
-
-    implementation 'org.aspectj:aspectjtools:1.9.20'
 
     implementation 'com.itextpdf:itextpdf:5.5.13.3'
 

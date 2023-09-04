@@ -1,12 +1,9 @@
 package ru.clevertec.service;
 
 import ru.clevertec.model.Transaction;
-import ru.clevertec.model.User;
 
 import java.sql.*;
-
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -33,6 +30,11 @@ public class TransactionService {
         }
     }
 
+    /**
+     * Возвращает список всех транзакций, находящихся в базе данных
+     *
+     * @return список обектов Transaction
+     */
     public List<Transaction> findAll() {
         List<Transaction> transactions = new ArrayList<>();
 
@@ -61,6 +63,12 @@ public class TransactionService {
         return transactions;
     }
 
+    /**
+     * Возращает транзакцию по заданному идентификатору
+     *
+     * @param id int, идентификатор нужной транзакции
+     * @return объект Transaction
+     */
     public Transaction findById(int id) {
         Transaction transaction = null;
 
@@ -86,6 +94,11 @@ public class TransactionService {
         return transaction;
     }
 
+    /**
+     * Добавляет ранзакцию в базу данных
+     *
+     * @param newTransaction объект Transaction, который будет добавлен в базу данных
+     */
     public void create(Transaction newTransaction)
     {
         try {
@@ -104,6 +117,12 @@ public class TransactionService {
         }
     }
 
+    /**
+     * Обновляет уже существующую транзакцию, присваивая ей новые значения
+     *
+     * @param newTransaction объект Transaction, которым будет замещена текущая транзакия
+     * @param id int, индентификатор транзакции, которая будет обновлен
+     */
     public void update(Transaction newTransaction, int id)
     {
         try {
@@ -123,10 +142,16 @@ public class TransactionService {
         }
     }
 
+    /**
+     * Удаляет транзакцию по заданному идентификатору
+     *
+     * @param id int, идентификатор транзакции
+     */
     public void delete(int id)
     {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Transactions WHERE id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "DELETE FROM Transactions WHERE id = ?");
             preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();

@@ -38,6 +38,11 @@ public class AccountService {
         }
     }
 
+    /**
+     * Возвращает список всех счетов, находящихся в базе данных
+     *
+     * @return список обектов Account, всех счетов из базы данных
+     */
     public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
 
@@ -64,6 +69,12 @@ public class AccountService {
         return accounts;
     }
 
+    /**
+     * Возращает счет по заданному идентификатору
+     *
+     * @param id int, идентификатор нужного счета
+     * @return объект Account, счет с заданным идентификатором
+     */
     public Account findById(int id) {
         Account account = null;
 
@@ -91,6 +102,11 @@ public class AccountService {
         return account;
     }
 
+    /**
+     * Добавляет счет в базу данных
+     *
+     * @param newAccount объект Account, который будет добавлен в базу данных
+     */
     public void create(Account newAccount) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Accounts(owner_bank_id," +
@@ -106,6 +122,12 @@ public class AccountService {
         }
     }
 
+    /**
+     * Обновляет уже существующий счет, присваивая ему новые значения
+     *
+     * @param newAccount объект Account, которым будет замещен текущий
+     * @param id int, индентификатор счета, который будет обновлен
+     */
     public void update(Account newAccount, int id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Accounts SET owner_bank_id= ?," +
@@ -122,6 +144,13 @@ public class AccountService {
         }
     }
 
+    /**
+     * Возвращает все счета, которые принадлежат банку с заданным идентификатором
+     * (у которых ownerBankId равен заданному идентификатору)
+     *
+     * @param bankId int, идентификатор банка
+     * @return список объектов Account
+     */
     public List<Account> findByBankId(int bankId) {
         List<Account> accounts = new ArrayList<>();
 
@@ -152,6 +181,13 @@ public class AccountService {
         return accounts;
     }
 
+    /**
+     * Возвращает все счета, которые принадлежат пользователю с заданным идентификатором
+     * (у которых ownerUserId равен заданному идентификатору)
+     *
+     * @param userId int, идентификатор пользователя
+     * @return список объектов Account
+     */
     public List<Account> findByUserId(int userId)
     {
         List<Account> accounts = new ArrayList<>();
@@ -183,6 +219,11 @@ public class AccountService {
         return accounts;
     }
 
+    /**
+     * Удаляет счет по заданному идентификатору
+     *
+     * @param id int, идентификатор счета
+     */
     public void delete(int id) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Accounts WHERE Accounts.id=?");
@@ -194,6 +235,12 @@ public class AccountService {
         }
     }
 
+    /**
+     * Производит операцию пополнения заданного счета на заданную сумму
+     *
+     * @param id int, идентификатор счета, на который поступает зачисление
+     * @param quantity double, количество зачисленной валюты
+     */
     public void replenishmentFunds(int id, double quantity) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -218,6 +265,12 @@ public class AccountService {
         }
     }
 
+    /**
+     * Производит операцию снятия заданной суммы с заданного счета
+     *
+     * @param id int, идентификатор счета, с которого происходит снятие
+     * @param quantity double, количество снятой валюты
+     */
     public void withdrawalFunds(int id, double quantity) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -242,6 +295,13 @@ public class AccountService {
         }
     }
 
+    /**
+     * производит операцию передачи валюты с одного счета на другой
+     *
+     * @param sender_id int, идентификатор отправителя
+     * @param recipient_id int, идентификатор получателя
+     * @param quantity double, сумма перевода
+     */
     public void transfer(int sender_id, int recipient_id, double quantity) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -269,6 +329,15 @@ public class AccountService {
         }
     }
 
+    /**
+     * Возвращает транзакции, в которых учавствовал счет с заданныхм идентификатором, произошедшие
+     * в заданный промежуток времени
+     *
+     * @param id int, идентификатор счета
+     * @param periodStart LocalDate, начало периода, в котором выбираются транзакции
+     * @param periodEnd LocalDate, конец периода
+     * @return список объектов Transaction, найденные транзакции
+     */
     public List<Transaction> getAccountRelatedTransactions(int id, LocalDate periodStart, LocalDate periodEnd) {
         List<Transaction> transactionList = new ArrayList<>();
 
@@ -305,6 +374,11 @@ public class AccountService {
         return transactionList;
     }
 
+    /**
+     * Запускает проверки, которые будут происходить раз в 30 секунд, на конец месяца, в конце месяца зачисляет
+     * на счет проценты от текущей суммы на счету. Процентная ставка указывается в конфигурационном
+     * файле(переменная interest_rate). Требует закрытия при завершении работы функцией closePercentage.
+     */
     public void startPercentage() {
         timer = new Thread(new Runnable() {
             private Month currentDate = LocalDate.now().getMonth();
@@ -345,6 +419,9 @@ public class AccountService {
         timer.start();
     }
 
+    /**
+     * Функция, прекращающая проверки на конец месяца, вызванные функцией startPercentage
+     */
     public void stopPercentage()
     {
         timer.interrupt();
